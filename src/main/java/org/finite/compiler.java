@@ -79,50 +79,16 @@ public class compiler {
         qbe.append("@start\n");
         qbe.append("""
                     %rax =l copy 0
-   
-                    
+                    %rbx =l copy 0
+                    %rcx =l copy 0
+                    %rdx =l copy 0
+                    %rsi =l copy 0
                 """);
-
+        String lastCmpResultVar = null; // Track last cmp result variable
         for (Instruction instr : instructions) {
             String op = instr.getOperation().toUpperCase();
             String op1 = instr.getOperand1();
             String op2 = instr.getOperand2();
-
-
-            /*
-             *  // Handle instructions
-    if (strcmp(tokens[0], "OUT") == 0)
-    {
-        char *value = convert_register(tokens[1]);
-        
-        if (tokens[1][0] == '$') {  // String output (when prefixed with $)
-            if (tokens[1][1] == 'R' || tokens[1][1] == 'r') {  // Register reference with $
-                // Remove the $ and treat register as pointer to string
-                char *reg = convert_register(tokens[1] + 1);
-                // Simplified pointer validation - just check for NULL
-                fprintf(ctx->output, "    %%cond =l ceql %s, 0\n", reg);
-                fprintf(ctx->output, "    jnz %%cond, @null_%d, @print_%d\n", ctx->label_count, ctx->label_count);
-                fprintf(ctx->output, "@null_%d\n", ctx->label_count);
-                fprintf(ctx->output, "    call $puts(l $str_empty)\n");
-                fprintf(ctx->output, "    jmp @end_%d\n", ctx->label_count);
-                fprintf(ctx->output, "@print_%d\n", ctx->label_count);
-                fprintf(ctx->output, "    call $puts(l %s)\n", reg);
-                fprintf(ctx->output, "@end_%d\n", ctx->label_count++);
-            } else {
-                fprintf(ctx->output, "    call $printf(l $strfmt, l $str%s)\n", value);
-            }
-        }
-        else if (value[0] == '%') { // Register output as number
-            fprintf(ctx->output, "    call $printf(l $numfmt, l %s)\n", value);
-        }
-        else { // String constant output
-            fprintf(ctx->output, "    call $puts(l $str%s)\n", value);
-        }
-        fflush(ctx->output);
-        return;
-    }
-             */
-
             if (op.equals("LBL") && op1 != null) {
                 qbe.append("@").append(op1).append("\n");
             } else if (op.equals("MOV") && op1 != null && op2 != null) {
@@ -205,18 +171,95 @@ public class compiler {
                 }
             } else if (op.equals("RET")) {
                 qbe.append("    ret\n");
-            } else if (op.equals("JMP") && op1 != null) {
+            } 
+            // Fix for JMP (Unconditional Jump)
+            else if (op.equals("JMP") && op1 != null) {
                 qbe.append("    jmp @").append(op1.replace("#", "")).append("\n");
-            } else if (op.equals("DB")) {
+            }
+            // Fix for JE (Jump if Equal)
+            else if (op.equals("JE") && op1 != null) {
+                String fallthroughLabel = parser.generateLabel("fallthrough");
+                String condVar = (lastCmpResultVar != null) ? lastCmpResultVar : "%cond";
+                qbe.append("    jnz ").append(condVar).append(", @").append(op1.replace("#", "")).append(", @").append(fallthroughLabel).append("\n");
+                qbe.append("@").append(fallthroughLabel).append("\n");
+                lastCmpResultVar = null;
+            }
+            // Fix for JNE (Jump if Not Equal)
+            else if (op.equals("JNE") && op1 != null) {
+                String fallthroughLabel = parser.generateLabel("fallthrough");
+                String condVar = (lastCmpResultVar != null) ? lastCmpResultVar : "%cond";
+                // Invert the condition: jump if not equal (i.e., condVar == 0)
+                qbe.append("    jnz ").append(condVar).append(", @").append(fallthroughLabel).append(", @").append(op1.replace("#", "")).append("\n");
+                qbe.append("@").append(fallthroughLabel).append("\n");
+                lastCmpResultVar = null;
+            }
+            // Add support for JZ/JNZ/JE/JNE (conditional jump, simulate with QBE)
+            else if ((op.equals("JZ") || op.equals("JE")) && op1 != null) {
+                String tempLabel = parser.generateLabel("jz");
+                String fallthroughLabel = parser.generateLabel("fallthrough");
+                String condVar = (lastCmpResultVar != null) ? lastCmpResultVar : "%cond";
+                qbe.append("    jnz ").append(condVar).append(", @").append(tempLabel).append(", @").append(fallthroughLabel).append("\n");
+                qbe.append("@").append(fallthroughLabel).append("\n");
+                lastCmpResultVar = null;
+            }
+            else if ((op.equals("JNZ") || op.equals("JNE")) && op1 != null) {
+                String fallthroughLabel = parser.generateLabel("fallthrough");
+                String condVar = (lastCmpResultVar != null) ? lastCmpResultVar : "%cond";
+                // Invert the condition: jump if not equal (i.e., condVar == 0)
+                qbe.append("    jnz ").append(condVar).append(", @").append(fallthroughLabel).append(", @").append(op1.replace("#", "")).append("\n");
+                qbe.append("@").append(fallthroughLabel).append("\n");
+                lastCmpResultVar = null;
+            }
+            // Add support for JG/JL/JGE/JLE (signed comparisons)
+            else if (op.equals("JG") && op1 != null) {
+                qbe.append("    %cond =w cgtw %rax, 0\n");
+                qbe.append("    jnz %cond, @").append(op1.replace("#", "")).append("\n");
+            }
+            else if (op.equals("JL") && op1 != null) {
+                qbe.append("    %cond =w cltw %rax, 0\n");
+                qbe.append("    jnz %cond, @").append(op1.replace("#", "")).append("\n");
+            }
+            else if (op.equals("JGE") && op1 != null) {
+                qbe.append("    %cond =w cgew %rax, 0\n");
+                qbe.append("    jnz %cond, @").append(op1.replace("#", "")).append("\n");
+            }
+            else if (op.equals("JLE") && op1 != null) {
+                qbe.append("    %cond =w clew %rax, 0\n");
+                qbe.append("    jnz %cond, @").append(op1.replace("#", "")).append("\n");
+            }
+            else if (op.equals("DB")) {
                 // Already handled in data section, emit comment in code
                 qbe.append("   # ; DB instruction handled in data section: ").append(instr.toString()).append("\n");
+            }
+            // Add support for INC
+            else if (op.equals("INC") && op1 != null) {
+                qbe.append("    %").append(op1.toLowerCase()).append(" =w add %").append(op1.toLowerCase()).append(", 1\n");
+            }
+            // Add support for DEC
+            else if (op.equals("DEC") && op1 != null) {
+                qbe.append("    %").append(op1.toLowerCase()).append(" =w sub %").append(op1.toLowerCase()).append(", 1\n");
+            }
+            // Add support for PUSH (simulate with stack pointer if needed)
+            else if (op.equals("PUSH") && op1 != null) {
+                qbe.append("    #; PUSH not natively supported in QBE, simulate if needed\n");
+            }
+            // Add support for POP (simulate with stack pointer if needed)
+            else if (op.equals("POP") && op1 != null) {
+                qbe.append("    #; POP not natively supported in QBE, simulate if needed\n");
+            }
+            // Add support for CMP (set flags, here just emit comment)
+            else if (op.equals("CMP") && op1 != null && op2 != null) {
+                String tempLabel = parser.generateLabel("cmp");
+                qbe.append("    %cmp_result =w sub %").append(op1.toLowerCase()).append(", ").append(op2.toLowerCase()).append("\n");
+                qbe.append("    %").append(tempLabel).append(" =w ceqw %cmp_result, 0\n");
+                lastCmpResultVar = "%" + tempLabel; // Save for next conditional jump
             }
             // Always output the instruction as a comment if not handled above
             else {
                 qbe.append("    #; ").append(instr.toString()).append("\n");
             }
         }
-
+        qbe.append("   ret #; End of instructions\n");
         qbe.append("}\n");
 
         // Save or print QBE code

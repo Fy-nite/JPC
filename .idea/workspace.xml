@@ -5,25 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b94b54f-a3f2-44e6-b1b0-59a045f1711c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/finite/Instructions.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/finite/Language/Backend/Backend.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/finite/Language/Backend/BackendSearcher.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/finite/Language/Backend/MASMBackend.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/finite/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/finite/TypeChecker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/finite/compiler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/finite/parser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/MainTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/finite/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/finite/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/finite/TypeChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/finite/TypeChecker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/finite/compiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/finite/compiler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/finite/parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/finite/parser.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -168,14 +154,31 @@
       <option name="presentableId" value="Default" />
       <updated>1746868940088</updated>
     </task>
+    <task id="LOCAL-00001" summary="init project">
+      <option name="closed" value="true" />
+      <created>1746967230100</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1746967230100</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="UpdateCopyrightCheckinHandler">
+    <option name="UPDATE_COPYRIGHT" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="init project" />
+    <option name="LAST_COMMIT_MESSAGE" value="init project" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/finite/parser.java</url>
-          <line>92</line>
+          <line>101</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <breakpoint enabled="true" type="java-exception">

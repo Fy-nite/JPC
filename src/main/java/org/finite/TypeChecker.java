@@ -118,4 +118,12 @@ public class TypeChecker {
         return false;
     }
 
+    public static boolean areOperandsCompatibleForComparison(String operand1, String operand2) {
+        String type1 = get_Operand_Type(operand1);
+        String type2 = get_Operand_Type(operand2);
+
+        // Allow comparison between registers, immediates, or memory
+        return (type1.equals(oprandType.REGISTER.toString()) || type1.equals(oprandType.IMMEDIATE.toString()) || type1.equals(oprandType.MEMORY.toString())) &&
+               (type2.equals(oprandType.REGISTER.toString()) || type2.equals(oprandType.IMMEDIATE.toString()) || type2.equals(oprandType.MEMORY.toString()));
+    }
 }

@@ -14,7 +14,11 @@ public class parser {
     public ArrayList<Instruction> instructions = new ArrayList<>();
 
     // use this to check if the operation is valid.
-    public static String[] validOperations = {"MOV", "ADD", "SUB", "MUL", "DIV", "OUT", "IN", "JMP", "CALL", "HLT","RET", "DB", "LBL", "CMP", "JZ", "JNZ", "JG", "JL", "JE", "JNE", "JGE", "JLE", "AND", "OR", "XOR", "NOT", "SHL", "SHR", "SAR", "ROL", "ROR", "NOP", "PUSH", "POP", "CALL", "RET", "DB",
+    public static String[] validOperations = {
+        "MOV", "ADD", "SUB", "MUL", "DIV", "OUT", "IN", "JMP", "CALL", "HLT", "RET", "DB", "LBL", "CMP",
+        "JZ", "JNZ", "JG", "JL", "JE", "JNE", "JGE", "JLE", "AND", "OR", "XOR", "NOT", "SHL", "SHR", "SAR",
+        "ROL", "ROR", "NOP", "PUSH", "POP", "INC", "DEC"
+        // ...add more as needed...
     };
     public static String[] validRegisters = {"RAX", "RBX", "RCX", "RDX", "RSI", "RDI", "RBP", "RSP", "R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9", "R10", "R11", "R12", "R13", "R14", "R15"};
     public static int[] stringmap = new int[65536]; // to hold string map for QBE
@@ -22,6 +26,11 @@ public class parser {
     // Add a new StringBuilder for the .data section
     public static StringBuilder dataSection = new StringBuilder();
 
+    private static int labelCounter = 0;
+
+    public static String generateLabel(String prefix) {
+        return prefix + "_gen_" + (labelCounter++);
+    }
 
 
     public class Instruction {
@@ -102,10 +111,10 @@ public class parser {
             String[] tokens = line.split("\\s+", 2); // Split into operation and the rest
             if (tokens.length == 0) continue;
             // if there's a lbl main, skip it
-            if (tokens[0].equalsIgnoreCase("lbl")) {
-                // Skip label lines
-                continue;
-            }
+            // if (tokens[0].equalsIgnoreCase("lbl")) {
+            //     // Skip label lines
+            //     continue;
+            // }
             String op = tokens[0];
             if (op.equalsIgnoreCase("HLT") || op.equalsIgnoreCase("RET")) {
                 // Special handling for HLT and RET instructions

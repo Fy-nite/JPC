@@ -54,7 +54,7 @@ public class Main {
         contents = fileContents.toString().split("\n");
         parser.parse(contents);
 
-            compiler.CompileQBE(parser.instructions, outputFilePath);
+        compiler.CompileQBE(parser.instructions, outputFilePath);
 
     }
 }
